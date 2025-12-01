@@ -1,0 +1,5316 @@
+[
+  {
+    "updatedAt": "2025-12-01T22:13:10.657Z",
+    "createdAt": "2025-11-12T21:25:25.875Z",
+    "id": "DnbXD4gKdEmz6k9z",
+    "name": "[SUP]-[INVIA] - Registra erros de envio",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "queue": "RDT-INVIA.send_error",
+          "options": {
+            "jsonParseBody": true,
+            "onlyContent": true
+          }
+        },
+        "type": "n8n-nodes-base.rabbitmqTrigger",
+        "typeVersion": 1,
+        "position": [
+          -256,
+          -160
+        ],
+        "id": "d20eb014-030f-49ad-a68b-bd24e9a75583",
+        "name": "RabbitMQ Trigger",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "tableId": "send_error",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "conversation",
+                "fieldValue": "={{ $json.conversation }}"
+              },
+              {
+                "fieldId": "phone",
+                "fieldValue": "={{ $json.phone }}"
+              },
+              {
+                "fieldId": "error_details_wpp",
+                "fieldValue": "={{ $json.error_details_wpp }}"
+              },
+              {
+                "fieldId": "code_dispatch",
+                "fieldValue": "={{ $json.codigo }}"
+              },
+              {
+                "fieldId": "user_id",
+                "fieldValue": "={{ $json.user_id }}"
+              },
+              {
+                "fieldId": "dispatch_id",
+                "fieldValue": "={{ $json.dispatch_id }}"
+              },
+              {
+                "fieldId": "send_wpp_error",
+                "fieldValue": "={{ $json.send_wpp_error }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          0,
+          -160
+        ],
+        "id": "d4ea5e54-2010-4f4e-9a5e-fd32494a8bfe",
+        "name": "Registra erro de envio",
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          -272,
+          -352
+        ],
+        "id": "fd48f9ba-4c6f-44ca-b6a7-bb2fb38930e8",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "flux_error",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          -32,
+          -352
+        ],
+        "id": "3a9cfd95-1d61-4845-b28f-d98f2ecc7002",
+        "name": "Grava na fila de erros de fluxo",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "b327615f-1b89-4975-8ded-3d26bb97f7ae",
+        "name": "End (Error)1",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          192,
+          -352
+        ],
+        "typeVersion": 1
+      }
+    ],
+    "connections": {
+      "RabbitMQ Trigger": {
+        "main": [
+          [
+            {
+              "node": "Registra erro de envio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Grava na fila de erros de fluxo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Grava na fila de erros de fluxo": {
+        "main": [
+          [
+            {
+              "node": "End (Error)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "5cf7ddc1-4b6e-4b05-b668-cf20b80a24cd",
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2025-11-12T21:25:25.875Z",
+        "createdAt": "2025-11-12T21:25:25.875Z",
+        "role": "workflow:owner",
+        "workflowId": "DnbXD4gKdEmz6k9z",
+        "projectId": "aaH2ba1xtHxvGWnn"
+      }
+    ],
+    "tags": [
+      {
+        "updatedAt": "2025-12-01T22:11:17.890Z",
+        "createdAt": "2025-12-01T22:11:17.890Z",
+        "id": "qPEIixlcSQFqYcWA",
+        "name": "INVIA"
+      }
+    ]
+  },
+  {
+    "updatedAt": "2025-12-01T22:12:03.183Z",
+    "createdAt": "2025-11-20T16:27:15.889Z",
+    "id": "TCy6ztrKNNDGnPWE",
+    "name": "Repassa Z-api",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "get-code-dispatch",
+          "authentication": "jwtAuth",
+          "responseMode": "responseNode",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Strict-Transport-Security",
+                  "value": "max-age=31536000"
+                },
+                {
+                  "name": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "name": "X-Frame-Options",
+                  "value": "DENY"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -1296,
+          128
+        ],
+        "id": "bac095c1-f1f3-4bfd-b869-cb42a6b93939",
+        "name": "Recebe Wpp inicial",
+        "webhookId": "02c0da48-8a39-4558-ba45-b0516633c974",
+        "alwaysOutputData": true,
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "verify",
+          "token": "={{ $json.token }}",
+          "options": {
+            "ignoreExpiration": true
+          }
+        },
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          -848,
+          128
+        ],
+        "id": "4376e7b7-0c01-4af5-9d3f-3b9a4932084b",
+        "name": "Valida token",
+        "alwaysOutputData": false,
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "decode",
+          "token": "={{ $('Edit Inicio').item.json.token }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          -560,
+          -112
+        ],
+        "id": "6abb561d-237e-41e6-ae9f-6b7395561d54",
+        "name": "Decodifica token",
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "36aebbae-8adf-4dfd-9d40-0b89790778d4",
+                "name": "fone",
+                "value": "={{ $json.body.telefone }}",
+                "type": "string"
+              },
+              {
+                "id": "f9451c37-b8cb-49c8-9670-7edcf5fbf9ee",
+                "name": "token",
+                "value": "={{ $json.headers.authorization.split(\" \")[1] }}",
+                "type": "string"
+              },
+              {
+                "id": "c4fc4cbb-b85c-4aee-83ee-a31ceed80f36",
+                "name": "ticket",
+                "value": "={{ $json.body.ticket }}",
+                "type": "string"
+              },
+              {
+                "id": "2f05d980-f7e6-46e3-9ce6-fcc9cc4463f7",
+                "name": "offer",
+                "value": "={{ $json.body.offer }}",
+                "type": "string"
+              },
+              {
+                "id": "2ec86278-8b9e-4f2c-9e44-cb9e641855f0",
+                "name": "image_ticket",
+                "value": "={{ $json.body.image_ticket }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -1056,
+          128
+        ],
+        "id": "2675230c-cf75-4711-94ac-e2f5f9430dbb",
+        "name": "Edit Inicio"
+      },
+      {
+        "parameters": {
+          "enableResponseOutput": true,
+          "respondWith": "json",
+          "responseBody": "{\n  \"status\": \"Unauthorized\",\n  \"status_code\": \"401\",\n  \"message\": \"Acesso não permitido\"\n}",
+          "options": {
+            "responseCode": 401
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          -528,
+          368
+        ],
+        "id": "6169ce14-378d-46f6-94e9-d17a1365ec3a",
+        "name": "Responde erro 401",
+        "alwaysOutputData": false,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.z-api.io/instances/3CFB76BB447D60658505EEE17BD0D626/token/B163739C495DF2DFA4361F1E/send-text",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "contentType": "raw",
+          "rawContentType": "application/json",
+          "body": "={\n  \"phone\": \"{{ $('Recebe Wpp inicial').item.json.body.telefone }}\",\n  \"message\": \"{{ $('Recebe Wpp inicial').item.json.body.ticket.replace(/\\r?\\n/g, '\\\\n') }}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          -288,
+          -112
+        ],
+        "id": "a2205a67-9aa8-44a6-b6e0-519fe1c7bb95",
+        "name": "Envio z-api",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "d4j0epGcAvkKVmKy",
+            "name": "Z-API credential"
+          }
+        },
+        "disabled": true,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://webhooks.integraflux.com.br/webhook/get-code-dispatch_rd",
+          "sendHeaders": true,
+          "headerParameters": {
+            "parameters": [
+              {
+                "name": "authorization",
+                "value": "={{ $json.headers.authorization }}"
+              }
+            ]
+          },
+          "sendBody": true,
+          "specifyBody": "json",
+          "jsonBody": "={\n  \"telefone\": \"{{ $json.body.telefone }}\",\n  \"ticket\": \"{{ $json.body.ticket.replace(/\\r?\\n/g, '\\\\n') }}\",\n  \"offer\" : \"{{ $json.body.offer.replace(/\\r?\\n/g, '\\\\n')}}\"\n}\n ",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          -1056,
+          352
+        ],
+        "id": "3eb63f0c-4db1-4e54-8b00-1ded859a9a2e",
+        "name": "HTTP Request",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "resource": "Contacts",
+          "operation": "Check Exists",
+          "session": "=RDT-4040-BU",
+          "phone": "={{ $('Edit Inicio').item.json.fone }}",
+          "requestOptions": {}
+        },
+        "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+        "typeVersion": 202502,
+        "position": [
+          -528,
+          112
+        ],
+        "id": "9d192a91-d126-43fa-a412-59e3037b3e50",
+        "name": "check phone",
+        "alwaysOutputData": true,
+        "credentials": {
+          "wahaApi": {
+            "id": "Wl98lqq7qaGZxSvo",
+            "name": "WAHA account"
+          }
+        },
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "resource": "Chatting",
+          "operation": "Send Text",
+          "session": "=RDT-4040-BU",
+          "chatId": "={{ $('check phone').first().json.chatId }}",
+          "text": "={{ $('Edit Inicio').item.json.ticket  }}",
+          "requestOptions": {}
+        },
+        "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+        "typeVersion": 202502,
+        "position": [
+          64,
+          96
+        ],
+        "id": "2037dde6-3638-4aae-b6db-f49fbbdcd479",
+        "name": "Envio Waha",
+        "credentials": {
+          "wahaApi": {
+            "id": "Wl98lqq7qaGZxSvo",
+            "name": "WAHA account"
+          }
+        },
+        "disabled": true,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7a0cc888-4710-45d1-a9c4-fe0b1f2a91b0",
+                "leftValue": "={{ $json.numberExists }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -256,
+          112
+        ],
+        "id": "fe799d3b-e3db-42d0-9d1f-5322165477eb",
+        "name": "Se número é inexistente no whatsapp",
+        "disabled": true
+      }
+    ],
+    "connections": {
+      "Recebe Wpp inicial": {
+        "main": [
+          [
+            {
+              "node": "Edit Inicio",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "HTTP Request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Valida token": {
+        "main": [
+          [
+            {
+              "node": "Decodifica token",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "check phone",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Responde erro 401",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Inicio": {
+        "main": [
+          [
+            {
+              "node": "Valida token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Decodifica token": {
+        "main": [
+          [
+            {
+              "node": "Envio z-api",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Envio z-api": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "check phone": {
+        "main": [
+          [
+            {
+              "node": "Se número é inexistente no whatsapp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se número é inexistente no whatsapp": {
+        "main": [
+          [
+            {
+              "node": "Envio Waha",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Recebe Wpp inicial": [
+        {
+          "json": {
+            "headers": {
+              "host": "webhooks.integraflux.com.br",
+              "user-agent": "axios/1.7.2",
+              "content-length": "625",
+              "accept": "application/json",
+              "accept-encoding": "gzip, compress, deflate, br",
+              "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijp7ImNsaWVudGVJZCI6ImE5YzNkNTg2LWM4YzgtNDg3Ny05MjQ3LTA3OTIyOGM0YzVkNSJ9LCJpYXQiOjE3NjMyNTE0NDd9.scFnnF_EF5Vk7ZD7kgumEwwHmDXax36mCk_83qCE_EY",
+              "content-type": "application/json",
+              "x-forwarded-for": "10.0.0.2",
+              "x-forwarded-host": "webhooks.integraflux.com.br",
+              "x-forwarded-port": "443",
+              "x-forwarded-proto": "https",
+              "x-forwarded-server": "47459ce78045",
+              "x-real-ip": "10.0.0.2"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "telefone": "33991971857",
+              "ticket": "*OURO PRETO - MG*\nCOMPROVANTE DE AQUISICAO E ATIVACAO\n------------------------------------\n21/11/2025 17:45      NSU: 174512\n\nCPF: 09*.***.**6-01\nPlaca: PVA0J83\nVeiculo: Carro\n*Valor total: R$ 2,00*\nForma de pagamento: Dinheiro\n\n*Ativado: 1 hora*\n\n*Saldo do condutor:*\nR$ 0,00\n------------------------------------\nEste e um comprovante de aquisicao e\nativacao de creditos de rotativo.\n------------------------------------\nAutenticidade:\n2eb8fbb8-803d-4500-acf9-bd501f33eacb\n\n\nBaixe nosso aplicativo:\nROTATIVO DIGITAL OURO PRETO\nwww.rotativodigitalop.com.br/app\n"
+            },
+            "webhookUrl": "https://webhooks.integraflux.com.br/webhook/get-code-dispatch",
+            "executionMode": "production",
+            "jwtPayload": {
+              "subject": {
+                "clienteId": "a9c3d586-c8c8-4877-9247-079228c4c5d5"
+              },
+              "iat": 1763251447
+            }
+          }
+        }
+      ],
+      "Edit Inicio": [
+        {
+          "json": {
+            "fone": "31998598535",
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijp7ImNsaWVudGVJZCI6ImE5YzNkNTg2LWM4YzgtNDg3Ny05MjQ3LTA3OTIyOGM0YzVkNSJ9LCJpYXQiOjE3NjMyNTE0NDd9.scFnnF_EF5Vk7ZD7kgumEwwHmDXax36mCk_83qCE_EY",
+            "ticket": "*OURO PRETO - MG*\nCOMPROVANTE DE AQUISICAO E ATIVACAO\n------------------------------------\n21/11/2025 17:45      NSU: 174512\n\nCPF: 09*.***.**6-01\nPlaca: PVA0J83\nVeiculo: Carro\n*Valor total: R$ 2,00*\nForma de pagamento: Dinheiro\n\n*Ativado: 1 hora*\n\n*Saldo do condutor:*\nR$ 0,00\n------------------------------------\nEste e um comprovante de aquisicao e\nativacao de creditos de rotativo.\n------------------------------------\nAutenticidade:\n2eb8fbb8-803d-4500-acf9-bd501f33eacb\n\n\nBaixe nosso aplicativo:\nROTATIVO DIGITAL OURO PRETO\nwww.rotativodigitalop.com.br/app\n",
+            "offer": null,
+            "image_ticket": null
+          }
+        }
+      ]
+    },
+    "versionId": "14d83c2a-fe30-4265-8c34-97d459951cb9",
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2025-11-20T16:27:15.889Z",
+        "createdAt": "2025-11-20T16:27:15.889Z",
+        "role": "workflow:owner",
+        "workflowId": "TCy6ztrKNNDGnPWE",
+        "projectId": "aaH2ba1xtHxvGWnn"
+      }
+    ],
+    "tags": [
+      {
+        "updatedAt": "2025-12-01T22:11:17.890Z",
+        "createdAt": "2025-12-01T22:11:17.890Z",
+        "id": "qPEIixlcSQFqYcWA",
+        "name": "INVIA"
+      }
+    ]
+  },
+  {
+    "updatedAt": "2025-12-01T22:13:31.818Z",
+    "createdAt": "2025-11-12T21:20:02.122Z",
+    "id": "Ubi5HjaM9IYGNNU7",
+    "name": "[SUP]-[INVIA] - Registra erros de fluxo",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "queue": "RDT-INVIA.flux_error",
+          "options": {
+            "jsonParseBody": true,
+            "onlyContent": true
+          }
+        },
+        "type": "n8n-nodes-base.rabbitmqTrigger",
+        "typeVersion": 1,
+        "position": [
+          -192,
+          -32
+        ],
+        "id": "9f21b7a4-bd7f-4493-85a6-b7cd62c3cd22",
+        "name": "RabbitMQ Trigger",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "tableId": "flow_fail",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "message",
+                "fieldValue": "={{ $json.execution.error.messages[0] }}"
+              },
+              {
+                "fieldId": "http_code",
+                "fieldValue": "={{ $json.execution.error.httpCode }}"
+              },
+              {
+                "fieldId": "description",
+                "fieldValue": "={{ $json.execution.error.description }}"
+              },
+              {
+                "fieldId": "message",
+                "fieldValue": "={{ $json.execution.error.message }}"
+              },
+              {
+                "fieldId": "stack",
+                "fieldValue": "={{ $json.execution.error.stack }}"
+              },
+              {
+                "fieldId": "node_error",
+                "fieldValue": "={{ $json.execution.lastNodeExecuted }}"
+              },
+              {
+                "fieldId": "mode",
+                "fieldValue": "={{ $json.execution.mode }}"
+              },
+              {
+                "fieldId": "workflow_id",
+                "fieldValue": "={{ $json.workflow.id }}"
+              },
+              {
+                "fieldId": "workflow",
+                "fieldValue": "={{ $json.workflow.name }}"
+              },
+              {
+                "fieldId": "execution",
+                "fieldValue": "={{ $json.execution }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          144,
+          -32
+        ],
+        "id": "02136d25-3e9a-48a7-ad75-c14b4210facb",
+        "name": "Grava erro de fluxo",
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "RabbitMQ Trigger": {
+        "main": [
+          [
+            {
+              "node": "Grava erro de fluxo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "c46960c3-0f56-480d-84da-e63897adc150",
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2025-11-12T21:20:02.122Z",
+        "createdAt": "2025-11-12T21:20:02.122Z",
+        "role": "workflow:owner",
+        "workflowId": "Ubi5HjaM9IYGNNU7",
+        "projectId": "aaH2ba1xtHxvGWnn"
+      }
+    ],
+    "tags": [
+      {
+        "updatedAt": "2025-12-01T22:11:17.890Z",
+        "createdAt": "2025-12-01T22:11:17.890Z",
+        "id": "qPEIixlcSQFqYcWA",
+        "name": "INVIA"
+      }
+    ]
+  },
+  {
+    "updatedAt": "2025-12-01T22:13:43.162Z",
+    "createdAt": "2025-11-12T20:32:05.152Z",
+    "id": "bFn9hN3dVWqdBYuD",
+    "name": "[OPR]-[INVIA] -  Criar chave JWT",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "path": "key-invia",
+          "authentication": "headerAuth",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          0,
+          -320
+        ],
+        "id": "a744edd1-c55e-4b8e-8087-7257367081dd",
+        "name": "Webhook",
+        "webhookId": "09b09cbb-fb2a-4630-b6a5-bae233b363fb",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "qB2cVRl7Ym0a3tjS",
+            "name": "Header Auth api-key INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          -80
+        ],
+        "id": "58af9f00-a744-48de-9817-ab3477af9cdf",
+        "name": "When clicking ‘Execute workflow’",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "{\n  \"status\": \"400\",\n  \"message\": \"Falha na requisição\"\n}",
+          "options": {
+            "responseCode": 400
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          768,
+          16
+        ],
+        "id": "195dead0-943f-4d19-8195-13bce22a3c47",
+        "name": "Responde erro"
+      },
+      {
+        "parameters": {
+          "options": {}
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          1104,
+          -96
+        ],
+        "id": "0674d8ca-d5e1-4272-828c-68fc6de4db3e",
+        "name": "Responde sucesso"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "9964a29b-6c5f-457f-a772-2f91f6f863ef",
+                "leftValue": "={{ $json.payload.clienteId }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "notEmpty",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "7169d6ee-21b3-4f3f-b4ef-75485cf2c88c",
+                "leftValue": "={{ $json.payload.clienteId }}",
+                "rightValue": "undefined",
+                "operator": {
+                  "type": "string",
+                  "operation": "notContains"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          512,
+          -192
+        ],
+        "id": "1605b76c-7ab5-491c-a944-249ae30a1520",
+        "name": "Se enviou clienteid"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          -528
+        ],
+        "id": "047f199a-1ecf-425b-8874-32bdec8e6206",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "flux_error",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          -528
+        ],
+        "id": "e4e7413b-5624-436b-8fc2-bc6c411548cf",
+        "name": "Grava na fila de erros de fluxo",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "f03cec58-7e14-468e-ac27-6b59f794fa1d",
+        "name": "End (Error)1",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          480,
+          -528
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"payload\": {\n    \"clienteId\": \"{{ $json.query.client || ''}}\",\n  }\n} ",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          288,
+          -192
+        ],
+        "id": "5e6b5b4c-9870-46e9-a831-872dc0c1a6e3",
+        "name": "pega dados webhook"
+      },
+      {
+        "parameters": {
+          "claims": {
+            "subject": "={{ $json.payload }}"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          768,
+          -208
+        ],
+        "id": "ab57d2a2-86be-490e-a396-d782b25d7bfb",
+        "name": "Codifica JWT",
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "decode",
+          "token": "={{ $json.token }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          1104,
+          -288
+        ],
+        "id": "5540623c-c12f-4f31-934f-352a8f39528d",
+        "name": "Decodifica JWT",
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "pega dados webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "pega dados webhook",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se enviou clienteid": {
+        "main": [
+          [
+            {
+              "node": "Codifica JWT",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Responde erro",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Grava na fila de erros de fluxo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Grava na fila de erros de fluxo": {
+        "main": [
+          [
+            {
+              "node": "End (Error)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "pega dados webhook": {
+        "main": [
+          [
+            {
+              "node": "Se enviou clienteid",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Codifica JWT": {
+        "main": [
+          [
+            {
+              "node": "Responde sucesso",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Decodifica JWT",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1",
+      "callerPolicy": "workflowsFromSameOwner",
+      "availableInMCP": false
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "4af582b5-442f-4a5b-83b5-64d0dcf5ca10",
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2025-11-12T20:32:05.152Z",
+        "createdAt": "2025-11-12T20:32:05.152Z",
+        "role": "workflow:owner",
+        "workflowId": "bFn9hN3dVWqdBYuD",
+        "projectId": "aaH2ba1xtHxvGWnn"
+      }
+    ],
+    "tags": [
+      {
+        "updatedAt": "2025-12-01T22:11:17.890Z",
+        "createdAt": "2025-12-01T22:11:17.890Z",
+        "id": "qPEIixlcSQFqYcWA",
+        "name": "INVIA"
+      }
+    ]
+  },
+  {
+    "updatedAt": "2025-12-01T22:12:58.799Z",
+    "createdAt": "2025-11-12T21:29:59.294Z",
+    "id": "iRlbdyl3f9SOfASZ",
+    "name": "[OPR]-[INVIA] - Reenvia direto",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "path": "dispatch_resent",
+          "authentication": "jwtAuth",
+          "responseMode": "responseNode",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Strict-Transport-Security",
+                  "value": "max-age=31536000"
+                },
+                {
+                  "name": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "name": "X-Frame-Options",
+                  "value": "DENY"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -384,
+          368
+        ],
+        "id": "a757f5cf-895b-48e2-8cd8-1c5798fc552e",
+        "name": "Recebe Wpp inicial",
+        "webhookId": "10935b12-6aa9-4406-b441-3d73d352e9b3",
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "verify",
+          "token": "={{ $json.token }}",
+          "options": {
+            "ignoreExpiration": true
+          }
+        },
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          208,
+          368
+        ],
+        "id": "e6da48f0-9d4b-47ac-b691-315c1b24246e",
+        "name": "Valida token",
+        "alwaysOutputData": false,
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "profiles",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "user_id",
+                "keyValue": "={{ $json.payload.subject.clienteId }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          656,
+          48
+        ],
+        "id": "73d0453d-2000-44bb-9749-e3b9d9a0b35e",
+        "name": "Busca usuário",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "decode",
+          "token": "={{ $('Edit Inicio').item.json.token }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          464,
+          48
+        ],
+        "id": "355d7c3b-3bb2-4ac8-b150-3764e7ecb232",
+        "name": "Decodifica token",
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          -384,
+          -208
+        ],
+        "id": "98804dce-76db-49cd-952c-9d41e872da0e",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "enableResponseOutput": true,
+          "respondWith": "json",
+          "responseBody": "{\n  \"status\": \"Unauthorized\",\n  \"status_code\": \"401\",\n  \"message\": \"Acesso não permitido\"\n}",
+          "options": {
+            "responseCode": 401
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          656,
+          384
+        ],
+        "id": "320dc89f-711d-4b5b-95d4-683ef8bec5be",
+        "name": "Responde erro 401",
+        "alwaysOutputData": false,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "flux_error",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          -144,
+          -208
+        ],
+        "id": "cbe89461-9ae4-43e8-8984-da0693899d6c",
+        "name": "Grava na fila de erros de fluxo",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "amount": 3
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          1600,
+          -96
+        ],
+        "id": "ce424d24-e82b-436b-9526-fcfe4d51aaa6",
+        "name": "Wait",
+        "webhookId": "33541483-a5fa-4f82-ab5b-4d4dacd9a2df"
+      },
+      {
+        "parameters": {},
+        "id": "f43ffe48-e85f-4bee-80c5-092e75880e5f",
+        "name": "End (Error)1",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          80,
+          -208
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "f9451c37-b8cb-49c8-9670-7edcf5fbf9ee",
+                "name": "token",
+                "value": "={{ $json.headers.authorization.split(\" \")[1] }}",
+                "type": "string"
+              },
+              {
+                "id": "2ec86278-8b9e-4f2c-9e44-cb9e641855f0",
+                "name": "codigo",
+                "value": "={{ $json.query.code }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -80,
+          368
+        ],
+        "id": "4d8b1de9-c9dc-4e9b-99d7-d92e872b574f",
+        "name": "Edit Inicio"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "a8049b6a-7210-42e0-8884-7be8742a2b93",
+                      "leftValue": "={{ $json.isSandbox }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "2b118f06-2809-437d-92de-3fa6c5041a88",
+                      "leftValue": "={{ $json.isSandbox }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "false",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {
+            "allMatchingOutputs": true
+          }
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          1344,
+          48
+        ],
+        "id": "3bb10fa0-09d4-4081-890e-37cd2a3afe63",
+        "name": "Sandbox"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fbe05d62-3c3b-40f6-814c-50d811cc40ad",
+                "name": "numero_wpp",
+                "value": "={{ $('Code in JavaScript').item.json.numero_wpp }}",
+                "type": "string"
+              },
+              {
+                "id": "5fa0c892-0177-45e2-99d1-2c6fa6237cfb",
+                "name": "codigo",
+                "value": "={{ $('Code in JavaScript').item.json.code_dispatch }}",
+                "type": "string"
+              },
+              {
+                "id": "3116ecc4-047c-4a0c-94dd-23d07afa51b2",
+                "name": "token",
+                "value": "={{ $('Edit Inicio').item.json.token }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a70038-878c-4aa7-a8be-b0616246946a",
+                "name": "ticket",
+                "value": "={{ $('Code in JavaScript').item.json.ticket }}",
+                "type": "string"
+              },
+              {
+                "id": "5d5c30c8-76da-47e1-9d9e-b437cc612590",
+                "name": "offer",
+                "value": "={{ $('Code in JavaScript').item.json.offer }}",
+                "type": "string"
+              },
+              {
+                "id": "c29b3eef-5da8-485c-86d3-0bf7ba704b4a",
+                "name": "image_ticket",
+                "value": "={{ $('Code in JavaScript').item.json.image_ticket_url }}",
+                "type": "string"
+              },
+              {
+                "id": "6fea86f3-052e-4ff3-b64f-6aa4fc6c69a2",
+                "name": "ticket_in_image",
+                "value": "={{ $('Busca usuário').item.json.ticket_in_image }}",
+                "type": "boolean"
+              },
+              {
+                "id": "98f7b688-a246-4675-848c-d8902c69b8e8",
+                "name": "image_width",
+                "value": "={{ $('Busca usuário').item.json.image_width }}",
+                "type": "number"
+              },
+              {
+                "id": "2692ae79-933a-4ce5-a23a-8bc261043bd7",
+                "name": "image_height",
+                "value": "={{ $('Busca usuário').item.json.image_height }}",
+                "type": "number"
+              },
+              {
+                "id": "c34cac14-8446-4b95-9493-b75f80466896",
+                "name": "is_sandbox",
+                "value": "={{ $('Busca usuário').item.json.is_sandbox }}",
+                "type": "boolean"
+              },
+              {
+                "id": "e98b9c1e-b688-4b0f-a3c8-402fdbba69e2",
+                "name": "user_id",
+                "value": "={{ $('Busca usuário').item.json.user_id }}",
+                "type": "string"
+              },
+              {
+                "id": "4a6672be-ac9a-41ac-b41a-4ebba2d3947c",
+                "name": "dispatch_id",
+                "value": "={{ $('Code in JavaScript').item.json.id }}",
+                "type": "number"
+              },
+              {
+                "id": "41f6f668-db4a-4df6-b4c3-84db184d4a88",
+                "name": "resent",
+                "value": true,
+                "type": "boolean"
+              },
+              {
+                "id": "7b1e53d0-e277-4feb-ab96-078440dbab02",
+                "name": "resent_date",
+                "value": "={{ new Date() }}",
+                "type": "string"
+              },
+              {
+                "id": "8fcc3ce0-5328-4e47-bea3-77cbe7bbceab",
+                "name": "send_wpp_fail",
+                "value": "={{ $('Code in JavaScript').item.json.send_wpp_fail }}",
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1856,
+          64
+        ],
+        "id": "5e646725-217c-4a4e-a196-66b753159e84",
+        "name": "Dados envio"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "dispatch",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          2048,
+          64
+        ],
+        "id": "4aef7c44-5f86-452a-b36d-aa6932c546cb",
+        "name": "Fila de dispatch",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "8cff5870-382c-4abe-8e40-872cdd48579f",
+        "name": "End (Success)1",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          2240,
+          64
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "dispatch",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "user_id",
+                "keyValue": "={{ $('Decodifica token').item.json.payload.subject.clienteId }}"
+              },
+              {
+                "keyName": "code_dispatch",
+                "keyValue": "={{ $('Edit Inicio').item.json.codigo }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          864,
+          48
+        ],
+        "id": "1075c171-ff16-4a29-a8d0-55c3fc3a3d82",
+        "name": "Busca dispatch",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "return $input.all().map(item => {\n\n  const numero = $input.first().json.phone;\n  let numero_formatado;\n\n\n  if (!numero.startsWith(\"55\")) {\n    numero_formatado =  \"55\" + numero;\n  } else {\n    numero_formatado = numero;  \n  }\n\n  return {\n    json: {\n      ...item.json,\n      \"numero_wpp\": numero_formatado,\n    }\n  };\n});\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          1072,
+          48
+        ],
+        "id": "a071fe6b-0418-4fb1-9780-601744c48be4",
+        "name": "Code in JavaScript"
+      }
+    ],
+    "connections": {
+      "Recebe Wpp inicial": {
+        "main": [
+          [
+            {
+              "node": "Edit Inicio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Valida token": {
+        "main": [
+          [
+            {
+              "node": "Decodifica token",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Responde erro 401",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Busca usuário": {
+        "main": [
+          [
+            {
+              "node": "Busca dispatch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Decodifica token": {
+        "main": [
+          [
+            {
+              "node": "Busca usuário",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Grava na fila de erros de fluxo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Grava na fila de erros de fluxo": {
+        "main": [
+          [
+            {
+              "node": "End (Error)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Dados envio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Inicio": {
+        "main": [
+          [
+            {
+              "node": "Valida token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sandbox": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados envio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados envio": {
+        "main": [
+          [
+            {
+              "node": "Fila de dispatch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fila de dispatch": {
+        "main": [
+          [
+            {
+              "node": "End (Success)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Busca dispatch": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Sandbox",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Recebe Wpp inicial": [
+        {
+          "json": {
+            "headers": {
+              "host": "n8n.integran8n.com.br",
+              "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36",
+              "accept": "*/*",
+              "accept-encoding": "gzip, deflate, br, zstd",
+              "accept-language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+              "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijp7ImNsaWVudGVJZCI6IjEzZjVjYTQzLTQ5NjUtNDBmMy1hZTg1LWQ2YjY5Zjg2NTRiNiJ9LCJpYXQiOjE3NTczNTYzMTl9._i94lQjingpsjQq7wIdZnHydZ86mLIyGLdr9lkLXG00",
+              "origin": "http://192.168.1.21:8080",
+              "priority": "u=1, i",
+              "referer": "http://192.168.1.21:8080/",
+              "sec-ch-ua": "\"Not;A=Brand\";v=\"99\", \"Google Chrome\";v=\"139\", \"Chromium\";v=\"139\"",
+              "sec-ch-ua-mobile": "?0",
+              "sec-ch-ua-platform": "\"macOS\"",
+              "sec-fetch-dest": "empty",
+              "sec-fetch-mode": "cors",
+              "sec-fetch-site": "cross-site",
+              "x-forwarded-for": "10.0.0.2",
+              "x-forwarded-host": "n8n.integran8n.com.br",
+              "x-forwarded-port": "443",
+              "x-forwarded-proto": "https",
+              "x-forwarded-server": "f127a914710a",
+              "x-real-ip": "10.0.0.2"
+            },
+            "params": {},
+            "query": {
+              "code": "4NsIRKb1krifkZbK"
+            },
+            "body": {},
+            "webhookUrl": "https://n8n.integran8n.com.br/webhook/dispatch_resent",
+            "executionMode": "production",
+            "jwtPayload": {
+              "subject": {
+                "clienteId": "13f5ca43-4965-40f3-ae85-d6b69f8654b6"
+              },
+              "iat": 1757356319
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "5b11d6bc-6610-406d-98d7-1f59296d090a",
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2025-11-12T21:29:59.294Z",
+        "createdAt": "2025-11-12T21:29:59.294Z",
+        "role": "workflow:owner",
+        "workflowId": "iRlbdyl3f9SOfASZ",
+        "projectId": "aaH2ba1xtHxvGWnn"
+      }
+    ],
+    "tags": [
+      {
+        "updatedAt": "2025-12-01T22:11:17.890Z",
+        "createdAt": "2025-12-01T22:11:17.890Z",
+        "id": "qPEIixlcSQFqYcWA",
+        "name": "INVIA"
+      }
+    ]
+  },
+  {
+    "updatedAt": "2025-12-01T22:12:34.531Z",
+    "createdAt": "2025-11-12T21:57:20.955Z",
+    "id": "k5PIAanSTviI8ZMT",
+    "name": "[OPR]-[INVIA] -  Envio direto",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "029df6ea-cdf8-479e-9c3c-b24cfc010cad",
+                "leftValue": "={{ $('Edit Fields').first().json.ticket_in_image }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "0a522c46-c927-4c57-bb4a-927ed3f54304",
+                "leftValue": "={{ $('Edit Fields').first().json.ticket && $('Edit Fields').first().json.offer}}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1280,
+          -48
+        ],
+        "id": "f6f58854-70cc-4a21-9abc-c2728abcb8fa",
+        "name": "Se envio imagem"
+      },
+      {
+        "parameters": {
+          "operation": "create",
+          "dataPropertyName": "fundo",
+          "backgroundColor": "#fffbe600",
+          "width": "={{ $('RabbitMQ Trigger dispatch').first().json.image_width }}",
+          "height": "={{ $('RabbitMQ Trigger dispatch').first().json.image_height }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.editImage",
+        "typeVersion": 1,
+        "position": [
+          144,
+          256
+        ],
+        "id": "df5f4a72-fbaa-4cfc-b337-82554b173db4",
+        "name": "Base imagem"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          1936,
+          256
+        ],
+        "id": "bdf5f476-bbb9-4dba-8132-410375925d41",
+        "name": "Merge"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "send_error",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          1712,
+          608
+        ],
+        "id": "44d2b3c6-0d58-48eb-b359-54f578fef656",
+        "name": "Registar erro de envio na fila",
+        "alwaysOutputData": false,
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "dispatch",
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "code_dispatch",
+                "condition": "eq",
+                "keyValue": "={{ $('RabbitMQ Trigger dispatch').first().json.codigo }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "dispatched_fail",
+                "fieldValue": "true"
+              },
+              {
+                "fieldId": "send_wpp_fail",
+                "fieldValue": "true"
+              },
+              {
+                "fieldId": "phone_fail",
+                "fieldValue": "={{ !$('check phone').first().json.numberExists }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          2000,
+          608
+        ],
+        "id": "3f91172c-4efd-40af-b9da-827169c13ab3",
+        "name": "Registar erro de envio no dispatch",
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          1936,
+          -64
+        ],
+        "id": "20acd354-1256-4c05-a0a0-90b658f12229",
+        "name": "Merge1"
+      },
+      {
+        "parameters": {
+          "queue": "RDT-INVIA.dispatch",
+          "options": {
+            "jsonParseBody": true,
+            "onlyContent": true
+          }
+        },
+        "type": "n8n-nodes-base.rabbitmqTrigger",
+        "typeVersion": 1,
+        "position": [
+          -928,
+          592
+        ],
+        "id": "7502dcd5-2a94-4277-9bc9-a5f075270b3f",
+        "name": "RabbitMQ Trigger dispatch",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "13d9615e-5902-415e-bace-aacf6132d9da",
+                "name": "conversation",
+                "value": "={{ $json[\"conversation\"] ?? \"Não há sessões de whatsapp ativas\" }}",
+                "type": "string"
+              },
+              {
+                "id": "016859cd-a5db-4c44-9d0e-d43653d4c9ff",
+                "name": "phone",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.numero_wpp }}",
+                "type": "string"
+              },
+              {
+                "id": "8cf6752d-36fd-4121-89c4-c9abc4a026c5",
+                "name": "error_details_wpp",
+                "value": "={{ $json[\"error_details_wpp\"] ?? \"Não há sessões de whatsapp ativas\" }}",
+                "type": "string"
+              },
+              {
+                "id": "8cab567a-64fb-44f5-b254-6a2d63ca77b2",
+                "name": "codigo",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.codigo }}",
+                "type": "string"
+              },
+              {
+                "id": "746e70bd-7a45-4332-9ce9-df2a8d75a9cb",
+                "name": "user_id",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.user_id }}",
+                "type": "string"
+              },
+              {
+                "id": "f66a008e-b2f4-45a1-88f9-abd4fcd40dd0",
+                "name": "dispatch_id",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.dispatch_id }}",
+                "type": "number"
+              },
+              {
+                "id": "6c6a4f4e-420e-457b-baab-446198ccbeb7",
+                "name": "send_wpp_error",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1408,
+          608
+        ],
+        "id": "819fe215-9ec3-43cf-ba99-3276fea41390",
+        "name": "Dados de erro de envio"
+      },
+      {
+        "parameters": {
+          "operation": "update",
+          "tableId": "dispatch",
+          "matchType": "allFilters",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "code_dispatch",
+                "condition": "eq",
+                "keyValue": "={{ $('RabbitMQ Trigger dispatch').first().json.codigo }}"
+              }
+            ]
+          },
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "dispatched",
+                "fieldValue": "true"
+              },
+              {
+                "fieldId": "resent",
+                "fieldValue": "={{ $('RabbitMQ Trigger dispatch').first().json.resent || false}}"
+              },
+              {
+                "fieldId": "resent_date",
+                "fieldValue": "={{ $('RabbitMQ Trigger dispatch').first().json.resent_date || null}}"
+              },
+              {
+                "fieldId": "session",
+                "fieldValue": "={{ $('Seleciona sessao').first().json.item[0].json.sessao }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          2160,
+          -64
+        ],
+        "id": "eb3cb909-c01d-4fb7-a749-33471e5005da",
+        "name": "Registrar envio de sucesso",
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "binaryToPropery",
+          "binaryPropertyName": "=fundo",
+          "destinationKey": "image",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.extractFromFile",
+        "typeVersion": 1,
+        "position": [
+          544,
+          256
+        ],
+        "id": "e2ed3b11-5551-4910-a796-938ec56ccc4d",
+        "name": "Imagem em base 64"
+      },
+      {
+        "parameters": {
+          "operation": "text",
+          "dataPropertyName": "fundo",
+          "text": "={{ $('RabbitMQ Trigger dispatch').first().json.ticket.replace(/(?:\\p{Extended_Pictographic}|\\uFE0F)/gu, '')\n    .replace(/[ \\t]+/g, ' ')\n    .split('\\n').map(l => l.trim()).join('\\n'); }}",
+          "fontSize": 13,
+          "positionX": 20,
+          "positionY": 20,
+          "options": {
+            "format": "webp"
+          }
+        },
+        "type": "n8n-nodes-base.editImage",
+        "typeVersion": 1,
+        "position": [
+          336,
+          256
+        ],
+        "id": "0bc130e4-97f8-4c21-bc7c-1f6e40284c2f",
+        "name": "Inclui texto na imagem"
+      },
+      {
+        "parameters": {
+          "jsCode": "\nlet message = '';\nlet hasTicket = false;\nlet hasOffer = false;\n\n\nconst ticket =  $('RabbitMQ Trigger dispatch').first().json.ticket;          //$input.first().json.ticket;\nconst offer =  $('RabbitMQ Trigger dispatch').first().json.offer;           //$input.first().json.offer;\n\nif (ticket) {\n  message = message + ticket;\n  hasTicket = true;\n}\n\nif (ticket && offer) {\n  message = message + \"\\n\\n_______________________________\\n\\n\"\n}\n\nif (offer) {\n  message = message + offer\n  hasOffer = true;\n}\n\n  return {\n    json: {\n      \"message\": message,\n      hasTicket: hasTicket,\n      hasOffer: hasOffer\n    }\n  };\n\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          992,
+          -48
+        ],
+        "id": "57b650e1-71ea-4095-aeaf-af4fd55e8c49",
+        "name": "Prepara dados de envio",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          -192,
+          -816
+        ],
+        "id": "c87581ea-9f8c-4104-b341-611cb0e7d28c",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "flux_error",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          48,
+          -816
+        ],
+        "id": "26f8e139-9f6e-4db5-a05e-bb58e4d2418f",
+        "name": "Grava na fila de erros de fluxo",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "5ce28a48-bc39-4774-a063-0a166547441d",
+        "name": "End (Error)1",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          272,
+          -816
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "resource": "Contacts",
+          "operation": "Check Exists",
+          "session": "={{ $json.item.sessao }}",
+          "phone": "={{ $('RabbitMQ Trigger dispatch').first().json.numero_wpp }}",
+          "requestOptions": {}
+        },
+        "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+        "typeVersion": 202502,
+        "position": [
+          144,
+          -32
+        ],
+        "id": "e31d95be-3870-44a9-818d-a160fe5f36a5",
+        "name": "check phone",
+        "alwaysOutputData": true,
+        "credentials": {
+          "wahaApi": {
+            "id": "Wl98lqq7qaGZxSvo",
+            "name": "WAHA account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "resource": "Chatting",
+          "operation": "Send Image",
+          "session": "={{ $('Edit Fields').first().json.item.sessao }}",
+          "chatId": "={{ $('check phone').first().json.chatId }}",
+          "file": "={\n    \"mimetype\": \"image/jpeg\",\n    \"filename\": \"filename.jpeg\",\n    \"data\": \"{{ $('Imagem em base 64').item.json.image }}\"\n  }",
+          "caption": "={{ $('RabbitMQ Trigger dispatch').first().json.offer }}",
+          "requestOptions": {}
+        },
+        "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+        "typeVersion": 202502,
+        "position": [
+          1504,
+          256
+        ],
+        "id": "413f8b93-0227-46c5-9f43-5323f9ec3c89",
+        "name": "Send an image",
+        "credentials": {
+          "wahaApi": {
+            "id": "Wl98lqq7qaGZxSvo",
+            "name": "WAHA account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "e7559617-c6f8-4bee-9bed-05f10ca06ffe",
+                "name": "item",
+                "value": "={{ $json.item[0].json }}",
+                "type": "object"
+              },
+              {
+                "id": "1eab0a08-fada-481b-8626-84bf26215d24",
+                "name": "image_ticket",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.image_ticket }}",
+                "type": "string"
+              },
+              {
+                "id": "9e6db150-0009-4242-90c3-dcb20a4fb580",
+                "name": "ticket_in_image",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.ticket_in_image }}",
+                "type": "boolean"
+              },
+              {
+                "id": "b8f9e848-808f-490b-8753-71e45bd4e103",
+                "name": "token",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.token }}",
+                "type": "string"
+              },
+              {
+                "id": "31d44326-7cbc-48cc-94f2-d9108d29ecf8",
+                "name": "ticket",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.ticket }}",
+                "type": "string"
+              },
+              {
+                "id": "3a2bca30-c2d4-4601-a769-060bc49c6e8d",
+                "name": "numero_wpp",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.numero_wpp }}",
+                "type": "string"
+              },
+              {
+                "id": "a697940b-cf7f-42ba-8d93-58a9bca117e0",
+                "name": "codigo",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.codigo }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1792,
+          -368
+        ],
+        "id": "edf1be08-20f6-48f4-bd6a-dd10832838bc",
+        "name": "Edit Fields"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7c743c06-8ec5-41b8-9ecb-aff663ef8201",
+                "leftValue": "={{ Number.isNaN($json.invia) }}",
+                "rightValue": "={{ $('Lista de sessoes').all().length  }}",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "4440a301-c832-42b5-9461-b86286814be3",
+                "leftValue": "={{ Number($json.invia) > $('Lista de sessoes').all().length }}",
+                "rightValue": "=",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "or"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          352,
+          -368
+        ],
+        "id": "e48ce159-2d0c-4955-9311-c2a65e555698",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "propertyName": "invia",
+          "key": "session_count_invia",
+          "keyType": "string",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.redis",
+        "typeVersion": 1,
+        "position": [
+          144,
+          -368
+        ],
+        "id": "50b0f360-e79c-4f0a-ac06-66ea3a231fc2",
+        "name": "Busca sequencia",
+        "credentials": {
+          "redis": {
+            "id": "0S3EWTLonk9aA5RB",
+            "name": "Redis account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "set",
+          "key": "session_count_invia",
+          "value": "1"
+        },
+        "type": "n8n-nodes-base.redis",
+        "typeVersion": 1,
+        "position": [
+          576,
+          -576
+        ],
+        "id": "d1a0c567-af2f-4b1d-bebe-f5099be7d6f1",
+        "name": "Seta sequencia 1",
+        "credentials": {
+          "redis": {
+            "id": "0S3EWTLonk9aA5RB",
+            "name": "Redis account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "set",
+          "key": "session_count_invia",
+          "value": "={{ (Number($('Merge2').first().json.invia) + 1).toString() }}"
+        },
+        "type": "n8n-nodes-base.redis",
+        "typeVersion": 1,
+        "position": [
+          1536,
+          -368
+        ],
+        "id": "320f93bc-81f8-492c-bd6a-9334ad01e7ec",
+        "name": "Incrementa sequencia",
+        "credentials": {
+          "redis": {
+            "id": "0S3EWTLonk9aA5RB",
+            "name": "Redis account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "079c5acf-3c90-4eed-9c3b-936341cb286d",
+                "name": "invia",
+                "value": "=1",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          864,
+          -576
+        ],
+        "id": "a9e87d5d-bdd6-497c-8b93-999fb99730af",
+        "name": "Sequencia 1"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "079c5acf-3c90-4eed-9c3b-936341cb286d",
+                "name": "invia",
+                "value": "={{ $('Busca sequencia').item.json.invia }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          736,
+          -352
+        ],
+        "id": "b911a5c7-eb32-4f48-a98a-c29521ec514a",
+        "name": "Sequencia n"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "b8cd253a-b8e2-4ebb-a09c-9c18e1bf912e",
+                "name": "item",
+                "value": "={{ $('Lista de sessoes').all().filter(item => item.json.sequencia ===  Number($json.invia)) }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1344,
+          -368
+        ],
+        "id": "53faf8af-1afd-496e-b113-0d23620ccb89",
+        "name": "Seleciona sessao"
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "dataTableId": {
+            "__rl": true,
+            "value": "yCGjR8t1cZrrFsXE",
+            "mode": "list",
+            "cachedResultName": "sessoes_invia",
+            "cachedResultUrl": "/projects/aaH2ba1xtHxvGWnn/datatables/yCGjR8t1cZrrFsXE"
+          },
+          "matchType": "allConditions",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "client_id",
+                "keyValue": "={{ $json.user_id }}"
+              }
+            ]
+          },
+          "limit": 100
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1,
+        "position": [
+          -720,
+          592
+        ],
+        "id": "b8a929c2-7814-449e-b1f7-a2bd9f1ea358",
+        "name": "Lista de sessoes",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.merge",
+        "typeVersion": 3.2,
+        "position": [
+          1104,
+          -368
+        ],
+        "id": "b5fbde9b-8d3c-48f0-9671-a6bdc22bdb85",
+        "name": "Merge2"
+      },
+      {
+        "parameters": {
+          "content": "## Balanceador de sessões\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+          "height": 496,
+          "width": 2608
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -224,
+          -624
+        ],
+        "typeVersion": 1,
+        "id": "389feee4-65ec-4b05-a7a5-97e0348b28c5",
+        "name": "Sticky Note"
+      },
+      {
+        "parameters": {
+          "content": "## Envio texto\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+          "height": 336,
+          "width": 2608,
+          "color": 4
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -224,
+          -128
+        ],
+        "typeVersion": 1,
+        "id": "90aee961-37e5-4642-9a8b-ae87bf9e4420",
+        "name": "Sticky Note1"
+      },
+      {
+        "parameters": {
+          "content": "## Envio imagem\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+          "height": 336,
+          "width": 2608,
+          "color": 6
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -224,
+          208
+        ],
+        "typeVersion": 1,
+        "id": "eae6de42-0a58-4546-9896-26b30030fe67",
+        "name": "Sticky Note2"
+      },
+      {
+        "parameters": {
+          "content": "## Registra erro de envio\n**Double click** to edit me. [Guide](https://docs.n8n.io/workflows/sticky-notes/)",
+          "height": 240,
+          "width": 2608,
+          "color": 3
+        },
+        "type": "n8n-nodes-base.stickyNote",
+        "position": [
+          -224,
+          544
+        ],
+        "typeVersion": 1,
+        "id": "f1ca2d08-3b56-4922-bda1-92af1fe359dc",
+        "name": "Sticky Note3"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "d86a4777-ae94-4f4e-8953-8bd3ce60abdc",
+                "leftValue": "={{ !$('Lista de sessoes').first().json.client_id }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -496,
+          592
+        ],
+        "id": "73572f38-ba62-4b84-b843-d2d90995dad8",
+        "name": "If1"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.z-api.io/instances/3CFB76BB447D60658505EEE17BD0D626/token/B163739C495DF2DFA4361F1E/send-text",
+          "authentication": "genericCredentialType",
+          "genericAuthType": "httpHeaderAuth",
+          "sendBody": true,
+          "contentType": "raw",
+          "rawContentType": "application/json",
+          "body": "={\n  \"phone\": \"{{ $('RabbitMQ Trigger dispatch').first().json.numero_wpp }} \",\n  \"message\": \"{{ $json.message.replace(/\\r?\\n/g, '\\\\n') }}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.3,
+        "position": [
+          720,
+          -816
+        ],
+        "id": "b0ad5fb7-b154-4706-a602-e0ab675a74a7",
+        "name": "Envio z-api",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "d4j0epGcAvkKVmKy",
+            "name": "Z-API credential"
+          }
+        },
+        "disabled": true,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "resource": "Chatting",
+          "operation": "Send Text",
+          "session": "={{ $('Edit Fields').first().json.item.sessao }}",
+          "chatId": "={{ $('check phone').first().json.chatId }}",
+          "text": "={{ $('Prepara dados de envio').item.json.message }}",
+          "requestOptions": {}
+        },
+        "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+        "typeVersion": 202502,
+        "position": [
+          1520,
+          -64
+        ],
+        "id": "2ddcf05f-2ead-42d9-9ffe-f29803728153",
+        "name": "Envio Waha",
+        "credentials": {
+          "wahaApi": {
+            "id": "Wl98lqq7qaGZxSvo",
+            "name": "WAHA account"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "13d9615e-5902-415e-bace-aacf6132d9da",
+                "name": "conversation",
+                "value": "=Número inexistemte no Whatsapp",
+                "type": "string"
+              },
+              {
+                "id": "016859cd-a5db-4c44-9d0e-d43653d4c9ff",
+                "name": "phone",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.numero_wpp }}",
+                "type": "string"
+              },
+              {
+                "id": "8cf6752d-36fd-4121-89c4-c9abc4a026c5",
+                "name": "error_details_wpp",
+                "value": "=Número solicitado não está associado ao Whatsapp",
+                "type": "string"
+              },
+              {
+                "id": "8cab567a-64fb-44f5-b254-6a2d63ca77b2",
+                "name": "codigo",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.codigo }}",
+                "type": "string"
+              },
+              {
+                "id": "746e70bd-7a45-4332-9ce9-df2a8d75a9cb",
+                "name": "user_id",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.user_id }}",
+                "type": "string"
+              },
+              {
+                "id": "f66a008e-b2f4-45a1-88f9-abd4fcd40dd0",
+                "name": "dispatch_id",
+                "value": "={{ $('RabbitMQ Trigger dispatch').first().json.dispatch_id }}",
+                "type": "number"
+              },
+              {
+                "id": "6c6a4f4e-420e-457b-baab-446198ccbeb7",
+                "name": "send_wpp_error",
+                "value": true,
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          1088,
+          336
+        ],
+        "id": "282a998a-4c14-40ab-971b-6e344fad46f6",
+        "name": "Dados de erro de envio1"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7a0cc888-4710-45d1-a9c4-fe0b1f2a91b0",
+                "leftValue": "={{ $json.numberExists }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          656,
+          -32
+        ],
+        "id": "3bbe9bc1-fcb4-4c99-b2f0-ec55fe514878",
+        "name": "Se número é inexistente no whatsapp"
+      },
+      {
+        "parameters": {
+          "jsCode": "return [{ json: {} }];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -96,
+          -368
+        ],
+        "id": "839cd078-1c0e-4584-a67b-04ce2a2459dc",
+        "name": "Code in JavaScript"
+      }
+    ],
+    "connections": {
+      "Se envio imagem": {
+        "main": [
+          [
+            {
+              "node": "Envio Waha",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Base imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Base imagem": {
+        "main": [
+          [
+            {
+              "node": "Inclui texto na imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge": {
+        "main": [
+          [
+            {
+              "node": "Dados de erro de envio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Registar erro de envio na fila": {
+        "main": [
+          [
+            {
+              "node": "Registar erro de envio no dispatch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge1": {
+        "main": [
+          [
+            {
+              "node": "Registrar envio de sucesso",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "RabbitMQ Trigger dispatch": {
+        "main": [
+          [
+            {
+              "node": "Lista de sessoes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados de erro de envio": {
+        "main": [
+          [
+            {
+              "node": "Registar erro de envio na fila",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Imagem em base 64": {
+        "main": [
+          [
+            {
+              "node": "Send an image",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Inclui texto na imagem": {
+        "main": [
+          [
+            {
+              "node": "Imagem em base 64",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara dados de envio": {
+        "main": [
+          [
+            {
+              "node": "Se envio imagem",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Grava na fila de erros de fluxo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Grava na fila de erros de fluxo": {
+        "main": [
+          [
+            {
+              "node": "End (Error)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "check phone": {
+        "main": [
+          [
+            {
+              "node": "Se número é inexistente no whatsapp",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Send an image": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 1
+            }
+          ],
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Edit Fields": {
+        "main": [
+          [
+            {
+              "node": "check phone",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Seta sequencia 1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Sequencia n",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Busca sequencia": {
+        "main": [
+          [
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Seta sequencia 1": {
+        "main": [
+          [
+            {
+              "node": "Sequencia 1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sequencia 1": {
+        "main": [
+          [
+            {
+              "node": "Merge2",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sequencia n": {
+        "main": [
+          [
+            {
+              "node": "Merge2",
+              "type": "main",
+              "index": 1
+            }
+          ]
+        ]
+      },
+      "Seleciona sessao": {
+        "main": [
+          [
+            {
+              "node": "Incrementa sequencia",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Lista de sessoes": {
+        "main": [
+          [
+            {
+              "node": "If1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Merge2": {
+        "main": [
+          [
+            {
+              "node": "Seleciona sessao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Incrementa sequencia": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If1": {
+        "main": [
+          [
+            {
+              "node": "Code in JavaScript",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados de erro de envio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Envio z-api": {
+        "main": [
+          [],
+          []
+        ]
+      },
+      "Envio Waha": {
+        "main": [
+          [
+            {
+              "node": "Merge1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Merge",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados de erro de envio1": {
+        "main": [
+          [
+            {
+              "node": "Registar erro de envio na fila",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se número é inexistente no whatsapp": {
+        "main": [
+          [
+            {
+              "node": "Prepara dados de envio",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados de erro de envio1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Code in JavaScript": {
+        "main": [
+          [
+            {
+              "node": "Busca sequencia",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Error Trigger": [
+        {
+          "json": {
+            "execution": {
+              "id": "5491",
+              "url": "http://localhost:5678/workflow/k5PIAanSTviI8ZMT/executions/5491",
+              "error": {
+                "message": "Workflow did not finish, possible out-of-memory issue",
+                "timestamp": 1763649525589,
+                "name": "WorkflowCrashedError",
+                "context": {}
+              },
+              "lastNodeExecuted": "Busca sequencia",
+              "mode": "trigger"
+            },
+            "workflow": {
+              "id": "k5PIAanSTviI8ZMT",
+              "name": "[OPR]-[INVIA] -  Envio direto"
+            }
+          }
+        }
+      ],
+      "RabbitMQ Trigger dispatch": [
+        {
+          "json": {
+            "numero_wpp": "5531984193556",
+            "codigo": "ea0p0iBut3ohg3z7",
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijp7ImNsaWVudGVJZCI6ImE5YzNkNTg2LWM4YzgtNDg3Ny05MjQ3LTA3OTIyOGM0YzVkNSJ9LCJpYXQiOjE3NjMyNTE0NDd9.scFnnF_EF5Vk7ZD7kgumEwwHmDXax36mCk_83qCE_EY",
+            "ticket": "*OURO PRETO - MG*\nCOMPROVANTE DE AQUISICAO E ATIVACAO\n------------------------------------\n21/11/2025 15:08      NSU: 150751\n\nCPF: 92*.***.**1-68\nPlaca: OLI5102\nVeiculo: Carro\n*Valor total: R$ 2,00*\nForma de pagamento: Dinheiro\n\n*Ativado: 1 hora*\n\n*Saldo do condutor:*\nR$ 0,00\n------------------------------------\nEste e um comprovante de aquisicao e\nativacao de creditos de rotativo.\n------------------------------------\nAutenticidade:\n467e1a13-ba2a-49ed-b144-b0abccb0d8c7\n\n\nBaixe nosso aplicativo:\nROTATIVO DIGITAL OURO PRETO\nwww.rotativodigitalop.com.br/app\n",
+            "offer": "",
+            "image_ticket": null,
+            "ticket_in_image": false,
+            "image_width": 400,
+            "image_height": 700,
+            "is_sandbox": false,
+            "user_id": "a9c3d586-c8c8-4877-9247-079228c4c5d5",
+            "dispatch_id": 654
+          }
+        }
+      ]
+    },
+    "versionId": "020c71f2-0053-4f33-b7bc-b250a3a6aa97",
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2025-11-12T21:57:20.955Z",
+        "createdAt": "2025-11-12T21:57:20.955Z",
+        "role": "workflow:owner",
+        "workflowId": "k5PIAanSTviI8ZMT",
+        "projectId": "aaH2ba1xtHxvGWnn"
+      }
+    ],
+    "tags": [
+      {
+        "updatedAt": "2025-12-01T22:11:17.890Z",
+        "createdAt": "2025-12-01T22:11:17.890Z",
+        "id": "qPEIixlcSQFqYcWA",
+        "name": "INVIA"
+      }
+    ]
+  },
+  {
+    "updatedAt": "2025-12-01T22:12:19.846Z",
+    "createdAt": "2025-11-13T22:40:25.258Z",
+    "id": "uYnIcIb6Geyj8MRr",
+    "name": "[OPR]-[INVIA] -  Grava sessoes de disparo de whatsapp",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.manualTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          192
+        ],
+        "id": "706e31be-6169-4e63-955f-43342b128086",
+        "name": "When clicking ‘Execute workflow’",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "set-session",
+          "authentication": "headerAuth",
+          "responseMode": "responseNode",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2.1,
+        "position": [
+          0,
+          0
+        ],
+        "id": "2ba43751-5677-4c3b-bfa1-8f0fca55b6f2",
+        "name": "Webhook",
+        "webhookId": "01cf9b0d-1969-4f79-883b-809eb71a0d8a",
+        "credentials": {
+          "httpHeaderAuth": {
+            "id": "qB2cVRl7Ym0a3tjS",
+            "name": "Header Auth api-key INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "options": {
+            "reset": false
+          }
+        },
+        "type": "n8n-nodes-base.splitInBatches",
+        "typeVersion": 3,
+        "position": [
+          832,
+          128
+        ],
+        "id": "ead67a6c-bf10-45e7-a337-b19e6c65a6cf",
+        "name": "Loop Over Items"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "name": "Replace Me",
+        "typeVersion": 1,
+        "position": [
+          1440,
+          144
+        ],
+        "id": "f7b09d4e-9acd-45f8-8dbb-61930a02d94e"
+      },
+      {
+        "parameters": {
+          "amount": 1
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          1248,
+          144
+        ],
+        "id": "572fe1fc-433c-40cc-b368-daa90088bd0d",
+        "name": "Wait",
+        "webhookId": "43debecc-9420-4a0f-909b-90ff0c9d035b",
+        "disabled": true
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "ec285a76-880a-4230-aca8-6b4aa4a6c9bf",
+                "name": "clientId",
+                "value": "={{ $json.body.clientId }}",
+                "type": "string"
+              },
+              {
+                "id": "8b15732f-c5c3-40ac-bf07-752c6981f652",
+                "name": "sessions",
+                "value": "={{ $json.body.sessions }}",
+                "type": "array"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          272,
+          128
+        ],
+        "id": "24035393-e132-4d88-b0b3-e68e6902e678",
+        "name": "Sessoes"
+      },
+      {
+        "parameters": {
+          "operation": "deleteRows",
+          "dataTableId": {
+            "__rl": true,
+            "value": "yCGjR8t1cZrrFsXE",
+            "mode": "list",
+            "cachedResultName": "sessoes_invia",
+            "cachedResultUrl": "/projects/aaH2ba1xtHxvGWnn/datatables/yCGjR8t1cZrrFsXE"
+          },
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "client_id",
+                "keyValue": "={{ $json.clientId }}"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1,
+        "position": [
+          448,
+          128
+        ],
+        "id": "8ad4ef17-6800-4b5e-af1f-9d8951863db5",
+        "name": "Limpa sessoes",
+        "alwaysOutputData": true
+      },
+      {
+        "parameters": {
+          "jsCode": "let seq = 1;\n\nreturn  $('Sessoes').first().json.sessions.map(i => ({\n  json: {\n    valor: i,\n    seq: seq++\n  }\n}));"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          624,
+          128
+        ],
+        "id": "d4ba7712-ab1d-4d35-a618-60dbcc0c1a32",
+        "name": "prepara sessoes"
+      },
+      {
+        "parameters": {
+          "operation": "upsert",
+          "dataTableId": {
+            "__rl": true,
+            "value": "yCGjR8t1cZrrFsXE",
+            "mode": "list",
+            "cachedResultName": "sessoes_invia",
+            "cachedResultUrl": "/projects/aaH2ba1xtHxvGWnn/datatables/yCGjR8t1cZrrFsXE"
+          },
+          "matchType": "allConditions",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "sessao",
+                "keyValue": "={{ $json.valor }}"
+              }
+            ]
+          },
+          "columns": {
+            "mappingMode": "defineBelow",
+            "value": {
+              "client_id": "={{ $('Sessoes').first().json.clientId }}",
+              "sessao": "={{ $json.valor.name }}",
+              "ativo": true,
+              "sequencia": "={{ $json.seq }}",
+              "limit": "={{ $json.valor.limit }}"
+            },
+            "matchingColumns": [],
+            "schema": [
+              {
+                "id": "client_id",
+                "displayName": "client_id",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "sessao",
+                "displayName": "sessao",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "string",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "ativo",
+                "displayName": "ativo",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "boolean",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "sequencia",
+                "displayName": "sequencia",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "readOnly": false,
+                "removed": false
+              },
+              {
+                "id": "limit",
+                "displayName": "limit",
+                "required": false,
+                "defaultMatch": false,
+                "display": true,
+                "type": "number",
+                "readOnly": false,
+                "removed": false
+              }
+            ],
+            "attemptToConvertTypes": false,
+            "convertFieldsToString": false
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.dataTable",
+        "typeVersion": 1,
+        "position": [
+          1072,
+          144
+        ],
+        "id": "e1311786-3dc3-4375-8d9f-257ee276bace",
+        "name": "Grava sessoes"
+      },
+      {
+        "parameters": {
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          1088,
+          -96
+        ],
+        "id": "35380419-f8bd-48c6-a6b1-800eb6a36928",
+        "name": "Respond to Webhook"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          0,
+          -224
+        ],
+        "id": "fe636cb5-38c3-445d-b9b2-b6c4357810cc",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "flux_error",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          240,
+          -224
+        ],
+        "id": "8dd44f81-f7ac-4f4a-8a0f-a157b35e79dd",
+        "name": "Grava na fila de erros de fluxo",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "317ca7a4-813f-409a-b280-638cfb073fbe",
+        "name": "End (Error)1",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          464,
+          -224
+        ],
+        "typeVersion": 1
+      }
+    ],
+    "connections": {
+      "When clicking ‘Execute workflow’": {
+        "main": [
+          [
+            {
+              "node": "Sessoes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Webhook": {
+        "main": [
+          [
+            {
+              "node": "Sessoes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Loop Over Items": {
+        "main": [
+          [
+            {
+              "node": "Respond to Webhook",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Grava sessoes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Replace Me": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Replace Me",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sessoes": {
+        "main": [
+          [
+            {
+              "node": "Limpa sessoes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Limpa sessoes": {
+        "main": [
+          [
+            {
+              "node": "prepara sessoes",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "prepara sessoes": {
+        "main": [
+          [
+            {
+              "node": "Loop Over Items",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Grava sessoes": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Grava na fila de erros de fluxo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Grava na fila de erros de fluxo": {
+        "main": [
+          [
+            {
+              "node": "End (Error)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Webhook": [
+        {
+          "json": {
+            "headers": {
+              "host": "webhooks.integraflux.com.br",
+              "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36",
+              "content-length": "114",
+              "accept": "*/*",
+              "accept-encoding": "gzip, deflate, br, zstd",
+              "accept-language": "pt-BR,pt;q=0.9,en-US;q=0.8,en;q=0.7",
+              "content-type": "application/json",
+              "origin": "http://localhost:8080",
+              "priority": "u=1, i",
+              "referer": "http://localhost:8080/",
+              "sec-ch-ua": "\"Google Chrome\";v=\"141\", \"Not?A_Brand\";v=\"8\", \"Chromium\";v=\"141\"",
+              "sec-ch-ua-mobile": "?0",
+              "sec-ch-ua-platform": "\"macOS\"",
+              "sec-fetch-dest": "empty",
+              "sec-fetch-mode": "cors",
+              "sec-fetch-site": "cross-site",
+              "x-api-key": "AydAjFdQ5znk5phUQk86",
+              "x-forwarded-for": "10.0.0.2",
+              "x-forwarded-host": "webhooks.integraflux.com.br",
+              "x-forwarded-port": "443",
+              "x-forwarded-proto": "https",
+              "x-forwarded-server": "47459ce78045",
+              "x-real-ip": "10.0.0.2"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "clientId": "13f5ca43-4965-40f3-ae85-d6b69f8654b6",
+              "sessions": [
+                {
+                  "name": "TICKETS-VALIDACAO-ROTATIVO",
+                  "limit": 800
+                }
+              ]
+            },
+            "webhookUrl": "https://webhooks.integraflux.com.br/webhook/set-session",
+            "executionMode": "production"
+          }
+        }
+      ]
+    },
+    "versionId": "4a7e45ab-6f61-4a11-af2f-3f70ff9c7fe6",
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2025-11-13T22:40:25.258Z",
+        "createdAt": "2025-11-13T22:40:25.258Z",
+        "role": "workflow:owner",
+        "workflowId": "uYnIcIb6Geyj8MRr",
+        "projectId": "aaH2ba1xtHxvGWnn"
+      }
+    ],
+    "tags": [
+      {
+        "updatedAt": "2025-12-01T22:11:17.890Z",
+        "createdAt": "2025-12-01T22:11:17.890Z",
+        "id": "qPEIixlcSQFqYcWA",
+        "name": "INVIA"
+      }
+    ]
+  },
+  {
+    "updatedAt": "2025-12-01T22:12:47.203Z",
+    "createdAt": "2025-11-12T21:50:37.065Z",
+    "id": "zPOCRF2nWNPXfHH8",
+    "name": "[OPR]-[INVIA] - Cria tokens de requisição ou envia diretamente",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "httpMethod": "POST",
+          "path": "get-code-dispatch_rd",
+          "authentication": "jwtAuth",
+          "responseMode": "responseNode",
+          "options": {
+            "responseHeaders": {
+              "entries": [
+                {
+                  "name": "Strict-Transport-Security",
+                  "value": "max-age=31536000"
+                },
+                {
+                  "name": "X-Content-Type-Options",
+                  "value": "nosniff"
+                },
+                {
+                  "name": "X-Frame-Options",
+                  "value": "DENY"
+                }
+              ]
+            }
+          }
+        },
+        "type": "n8n-nodes-base.webhook",
+        "typeVersion": 2,
+        "position": [
+          -3152,
+          1072
+        ],
+        "id": "5d1ae2e7-6a94-4de9-a88d-a768e85e3961",
+        "name": "Recebe Wpp inicial",
+        "webhookId": "02c0da48-8a39-4558-ba45-b0516633c974",
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "verify",
+          "token": "={{ $json.token }}",
+          "options": {
+            "ignoreExpiration": true
+          }
+        },
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          -2560,
+          1072
+        ],
+        "id": "949ecce3-1d86-417f-9eb9-56aae0ebbfd7",
+        "name": "Valida token",
+        "alwaysOutputData": false,
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        },
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {},
+        "id": "79f6a4d8-cae1-4c19-8ca8-bd63abe4f5b5",
+        "name": "End (Error)",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          1008,
+          1104
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "operation": "get",
+          "tableId": "profiles",
+          "filters": {
+            "conditions": [
+              {
+                "keyName": "user_id",
+                "keyValue": "={{ $json.payload.subject.clienteId }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -944,
+          432
+        ],
+        "id": "43e71937-4dc8-47fd-b250-c8b4ac73a134",
+        "name": "Busca usuário",
+        "alwaysOutputData": true,
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        },
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "operation": "decode",
+          "token": "={{ $('Edit Inicio').item.json.token }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.jwt",
+        "typeVersion": 1,
+        "position": [
+          -2272,
+          752
+        ],
+        "id": "171803fa-f866-410c-ad0a-15783ed84fe3",
+        "name": "Decodifica token",
+        "credentials": {
+          "jwtAuth": {
+            "id": "W6wSTzYKxCYGHV3G",
+            "name": "Credencial JWT INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "7e4657aa-8d2b-4002-b74c-3a98283e35ab",
+                "leftValue": "={{ $json.valido }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -1216,
+          448
+        ],
+        "id": "c5f29358-a3e1-4a02-b184-00f29b0ef4ec",
+        "name": "Se parâmetros váalidos"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "029df6ea-cdf8-479e-9c3c-b24cfc010cad",
+                "leftValue": "={{ $json.id }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "string",
+                  "operation": "exists",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "6b274d22-9c46-4a7d-9b59-60ba87a28d87",
+                "leftValue": "={{ $json.is_active }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "true",
+                  "singleValue": true
+                }
+              },
+              {
+                "id": "93f5a02c-8575-455b-bdf3-510bef369cee",
+                "leftValue": "={{ $('Edit Inicio').first().json.token }}",
+                "rightValue": "={{ $json.jwt_token }}",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          -704,
+          432
+        ],
+        "id": "01d60fc6-2d08-42c2-b687-f016c2b77482",
+        "name": "Se usuário está ativo"
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          -3168,
+          608
+        ],
+        "id": "8d303bd4-7db2-46e4-82d6-40ef8fa2c2a8",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "request_error",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          320,
+          1104
+        ],
+        "id": "101b3bbd-7794-428b-b853-c7d0102ce0cf",
+        "name": "Grava na fila de erros de requisição",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "enableResponseOutput": true,
+          "respondWith": "json",
+          "responseBody": "{\n  \"status\": \"Forbidden\",\n  \"status_code\": \"403\",\n  \"message\": \"Acesso não permitido\"\n}",
+          "options": {
+            "responseCode": 403
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          -384,
+          800
+        ],
+        "id": "d8f8aae0-8eb2-4c33-bd3e-30cb5c59f614",
+        "name": "Responde erro 403",
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "enableResponseOutput": true,
+          "respondWith": "json",
+          "responseBody": "={\n  \"status\": \"{{ $json.status ?? 'Server error'}}\",\n  \"status_code\": \"{{ !$json.status ? 500 : 400 }}\",\n  \"telefone\": \"{{ $json.telefone }}\",\n  \"message\": \"{{ $json.motivo ?? 'Erro no servidor'}}\" \n} ",
+          "options": {
+            "responseCode": "={{ !$json.status ? 500 : 400 }}"
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          -960,
+          768
+        ],
+        "id": "860a625c-84ba-4e13-9135-4d96170e0de0",
+        "name": "Responde erro 400"
+      },
+      {
+        "parameters": {
+          "enableResponseOutput": true,
+          "respondWith": "json",
+          "responseBody": "{\n  \"status\": \"Unauthorized\",\n  \"status_code\": \"401\",\n  \"message\": \"Acesso não permitido\"\n}",
+          "options": {
+            "responseCode": 401
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          -1696,
+          1088
+        ],
+        "id": "9b7146ab-c4fb-4da7-bebc-45b14a12b7a7",
+        "name": "Responde erro 401",
+        "alwaysOutputData": false,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "flux_error",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          -2928,
+          608
+        ],
+        "id": "3b30eb2b-9e28-476d-bc86-d15881abc3a2",
+        "name": "Grava na fila de erros de fluxo",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "9026a578-76f7-4112-b52b-a426fca607b5",
+        "name": "End (Success)",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          1024,
+          176
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "132c1285-a41c-4471-84c7-e04b96125ecf",
+                "name": "user_id",
+                "value": "={{ $json.id }}",
+                "type": "string"
+              },
+              {
+                "id": "63b0d497-7d18-4d23-952c-fd14c251bc50",
+                "name": "active",
+                "value": "={{ $json.is_active }}",
+                "type": "boolean"
+              },
+              {
+                "id": "d1c508b1-e1fa-4000-b7a9-9fa1d90ca66a",
+                "name": "isSandbox",
+                "value": "={{ $json.is_sandbox }}",
+                "type": "boolean"
+              },
+              {
+                "id": "0778b55e-5004-4846-a88d-aa455334a9be",
+                "name": "fone",
+                "value": "={{ $('Valida parâmetros de requisicao').item.json.numero_wpp }}",
+                "type": "string"
+              },
+              {
+                "id": "2f46e350-aa91-4e92-9ef1-7dac863aef3a",
+                "name": "direct_send",
+                "value": "={{ $json.direct_send }}",
+                "type": "boolean"
+              },
+              {
+                "id": "ebf94baf-dce2-4194-a133-76c90a5df5de",
+                "name": "ticket_in_image",
+                "value": "={{ $json.ticket_in_image }}",
+                "type": "boolean"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -384,
+          176
+        ],
+        "id": "2d081710-5be7-4421-8fe5-da4a66a6f30d",
+        "name": "Edit Fields1"
+      },
+      {
+        "parameters": {
+          "amount": 3
+        },
+        "type": "n8n-nodes-base.wait",
+        "typeVersion": 1.1,
+        "position": [
+          128,
+          16
+        ],
+        "id": "2f6fe7cb-5e65-492a-9a99-02fc6de8c625",
+        "name": "Wait",
+        "webhookId": "6718c094-74a2-4c13-967e-7dceac103836"
+      },
+      {
+        "parameters": {},
+        "id": "1f432402-a668-4a63-ad8b-a3fe38615eae",
+        "name": "End (Error)1",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          -2704,
+          608
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "action": "generate",
+          "encodingType": "base64",
+          "stringLength": 16
+        },
+        "type": "n8n-nodes-base.crypto",
+        "typeVersion": 1,
+        "position": [
+          -1824,
+          752
+        ],
+        "id": "aa5cf9aa-ed30-49f0-8664-ea06143af1e8",
+        "name": "Gera uma chave única",
+        "alwaysOutputData": true,
+        "onError": "continueRegularOutput"
+      },
+      {
+        "parameters": {
+          "respondWith": "json",
+          "responseBody": "={\n  \"telefonre\": \"{{ $json.phone }}\",\n  \"codigo\": \"{{ $json.code_dispatch }}\"\n}",
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.2,
+        "position": [
+          768,
+          176
+        ],
+        "id": "0c7f2a21-6590-4a0a-947b-ebfdc14050be",
+        "name": "Entrega token"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "b02e6f45-5f82-4111-9cc3-aec5ef3d8090",
+                "leftValue": "={{ $json.error.status_code }}",
+                "rightValue": "400",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          320,
+          1360
+        ],
+        "id": "8c6eba96-826d-4ca4-9a72-0d48307c807f",
+        "name": "If"
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "36aebbae-8adf-4dfd-9d40-0b89790778d4",
+                "name": "fone",
+                "value": "={{ $json.body.telefone }}",
+                "type": "string"
+              },
+              {
+                "id": "f9451c37-b8cb-49c8-9670-7edcf5fbf9ee",
+                "name": "token",
+                "value": "={{ $json.headers.authorization.split(\" \")[1] }}",
+                "type": "string"
+              },
+              {
+                "id": "c4fc4cbb-b85c-4aee-83ee-a31ceed80f36",
+                "name": "ticket",
+                "value": "={{ $json.body.ticket }}",
+                "type": "string"
+              },
+              {
+                "id": "2f05d980-f7e6-46e3-9ce6-fcc9cc4463f7",
+                "name": "offer",
+                "value": "={{ $json.body.offer }}",
+                "type": "string"
+              },
+              {
+                "id": "2ec86278-8b9e-4f2c-9e44-cb9e641855f0",
+                "name": "image_ticket",
+                "value": "={{ $json.body.image_ticket }}",
+                "type": "string"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          -2848,
+          1072
+        ],
+        "id": "64bd7a69-5d85-4691-a925-f76612ef9c4a",
+        "name": "Edit Inicio"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "029df6ea-cdf8-479e-9c3c-b24cfc010cad",
+                "leftValue": "={{ $('Edit Fields1').item.json.direct_send }}",
+                "rightValue": "",
+                "operator": {
+                  "type": "boolean",
+                  "operation": "false",
+                  "singleValue": true
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          544,
+          192
+        ],
+        "id": "c9ddfafb-7a08-4dc3-ba28-9a132f5d1f39",
+        "name": "Se é envio direto "
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "a8049b6a-7210-42e0-8884-7be8742a2b93",
+                      "leftValue": "={{ $json.isSandbox }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "true",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "2b118f06-2809-437d-92de-3fa6c5041a88",
+                      "leftValue": "={{ $json.isSandbox }}",
+                      "rightValue": "",
+                      "operator": {
+                        "type": "boolean",
+                        "operation": "false",
+                        "singleValue": true
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {
+            "allMatchingOutputs": true
+          }
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          -64,
+          176
+        ],
+        "id": "b48ff7c9-a841-40ff-aec6-d2b7b47adf93",
+        "name": "Sandbox"
+      },
+      {
+        "parameters": {},
+        "id": "ff152113-2ae9-45f2-ab36-409a7cb6601f",
+        "name": "Erro ~ 400",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          992,
+          1536
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "tableId": "dispatch",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "code_dispatch",
+                "fieldValue": "={{ $('Gera uma chave única').item.json.data }}"
+              },
+              {
+                "fieldId": "send_date",
+                "fieldValue": "={{ $now.toISO() }}"
+              },
+              {
+                "fieldId": "phone",
+                "fieldValue": "={{ $('Edit Inicio').item.json.fone }}"
+              },
+              {
+                "fieldId": "user_id",
+                "fieldValue": "={{ $('Gera uma chave única').item.json.payload.subject.clienteId }}"
+              },
+              {
+                "fieldId": "ticket",
+                "fieldValue": "={{ $('Edit Inicio').item.json.ticket }}"
+              },
+              {
+                "fieldId": "offer",
+                "fieldValue": "={{ $('Edit Inicio').item.json.offer }}"
+              },
+              {
+                "fieldId": "ticket_in_image",
+                "fieldValue": "={{ $('Busca usuário').item.json.ticket_in_image }}"
+              },
+              {
+                "fieldId": "image_ticket_url",
+                "fieldValue": "={{ $('Edit Inicio').item.json.image_ticket }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          336,
+          192
+        ],
+        "id": "e680feae-e78e-4c85-9a4d-d6223d5ac631",
+        "name": "Cria dispatch",
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "assignments": {
+            "assignments": [
+              {
+                "id": "fbe05d62-3c3b-40f6-814c-50d811cc40ad",
+                "name": "numero_wpp",
+                "value": "={{ $('Valida parâmetros de requisicao').item.json.numero_wpp }}",
+                "type": "string"
+              },
+              {
+                "id": "5fa0c892-0177-45e2-99d1-2c6fa6237cfb",
+                "name": "codigo",
+                "value": "={{ $('Valida parâmetros de requisicao').item.json.data }}",
+                "type": "string"
+              },
+              {
+                "id": "3116ecc4-047c-4a0c-94dd-23d07afa51b2",
+                "name": "token",
+                "value": "={{ $('Edit Inicio').item.json.token }}",
+                "type": "string"
+              },
+              {
+                "id": "f5a70038-878c-4aa7-a8be-b0616246946a",
+                "name": "ticket",
+                "value": "={{ $('Edit Inicio').item.json.ticket }}",
+                "type": "string"
+              },
+              {
+                "id": "5d5c30c8-76da-47e1-9d9e-b437cc612590",
+                "name": "offer",
+                "value": "={{ $('Edit Inicio').item.json.offer }}",
+                "type": "string"
+              },
+              {
+                "id": "c29b3eef-5da8-485c-86d3-0bf7ba704b4a",
+                "name": "image_ticket",
+                "value": "={{ $('Edit Inicio').item.json.image_ticket }}",
+                "type": "string"
+              },
+              {
+                "id": "6fea86f3-052e-4ff3-b64f-6aa4fc6c69a2",
+                "name": "ticket_in_image",
+                "value": "={{ $('Busca usuário').item.json.ticket_in_image }}",
+                "type": "boolean"
+              },
+              {
+                "id": "98f7b688-a246-4675-848c-d8902c69b8e8",
+                "name": "image_width",
+                "value": "={{ $('Busca usuário').item.json.image_width }}",
+                "type": "number"
+              },
+              {
+                "id": "2692ae79-933a-4ce5-a23a-8bc261043bd7",
+                "name": "image_height",
+                "value": "={{ $('Busca usuário').item.json.image_height }}",
+                "type": "number"
+              },
+              {
+                "id": "c34cac14-8446-4b95-9493-b75f80466896",
+                "name": "is_sandbox",
+                "value": "={{ $('Busca usuário').item.json.is_sandbox }}",
+                "type": "boolean"
+              },
+              {
+                "id": "e98b9c1e-b688-4b0f-a3c8-402fdbba69e2",
+                "name": "user_id",
+                "value": "={{ $('Busca usuário').item.json.user_id }}",
+                "type": "string"
+              },
+              {
+                "id": "4a6672be-ac9a-41ac-b41a-4ebba2d3947c",
+                "name": "dispatch_id",
+                "value": "={{ $('Cria dispatch').item.json.id }}",
+                "type": "number"
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          320,
+          496
+        ],
+        "id": "44419efa-8997-4b2b-b270-9bdedaac7bb3",
+        "name": "Dados envio"
+      },
+      {
+        "parameters": {
+          "tableId": "dispatch",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "code_dispatch",
+                "fieldValue": "={{ $('Gera uma chave única').item.json.data }}"
+              },
+              {
+                "fieldId": "send_date",
+                "fieldValue": "={{ $now.toISO() }}"
+              },
+              {
+                "fieldId": "phone",
+                "fieldValue": "={{ $('Prepara dados de erros').first().json.error.telefone }}"
+              },
+              {
+                "fieldId": "user_id",
+                "fieldValue": "={{ $('Gera uma chave única').item.json.payload.subject.clienteId }}"
+              },
+              {
+                "fieldId": "phone_fail",
+                "fieldValue": "true"
+              },
+              {
+                "fieldId": "ticket",
+                "fieldValue": "={{ $('Edit Inicio').item.json.ticket || ''}}"
+              },
+              {
+                "fieldId": "offer",
+                "fieldValue": "={{ $('Edit Inicio').item.json.offer || ''}}"
+              },
+              {
+                "fieldId": "image_ticket_url",
+                "fieldValue": "={{ $('Edit Inicio').item.json.image_ticket || ''}}"
+              },
+              {
+                "fieldId": "message_error",
+                "fieldValue": "={{ $('Valida parâmetros de requisicao').item.json.motivo }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          992,
+          1344
+        ],
+        "id": "c6462633-d323-4ca8-b841-98b7b5c80ca6",
+        "name": "Registra dispatch com erro",
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "dispatch",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          592,
+          496
+        ],
+        "id": "1a11ed99-b864-4e6a-87ff-9f6ebe2fc9aa",
+        "name": "Fila de dispatch",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "a6792a4d-abe6-48fe-a6db-353b67029199",
+        "name": "End (Success)1",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          1024,
+          496
+        ],
+        "typeVersion": 1
+      },
+      {
+        "parameters": {
+          "jsCode": "\nconst dddsValidos = [\n  '11', '12', '13', '14', '15', '16', '17', '18', '19',\n  '21', '22', '24',\n  '27', '28',\n  '31', '32', '33', '34', '35', '37', '38',\n  '41', '42', '43', '44', '45', '46',\n  '47', '48', '49',\n  '51', '53', '54', '55',\n  '61',\n  '62', '64',\n  '63',\n  '65', '66',\n  '67',\n  '68',\n  '69',\n  '71', '73', '74', '75', '77',\n  '79',\n  '81', '87',\n  '82',\n  '83',\n  '84',\n  '85', '88',\n  '86', '89',\n  '91', '93', '94',\n  '92', '97',\n  '95',\n  '96',\n  '98', '99'\n];\n\nconst parms = $('Edit Inicio').first().json\n\nlet fone = parms.fone;\nlet ticket = parms.ticket || '';\nlet offer = parms.offer || '';\nlet numero_wpp = '';\n\n\nfunction validaParametros() {\n\n  ticket = ticket.trim();\n  offer = offer.trim();\n  \n  var msg_erro = \"\";\n  \n  if (!fone) {\n    msg_erro = \"Parâmetros 'telefone' é obrigatório.\";\n  } else  \n  if (!ticket && !offer) {\n    msg_erro = \"Parâmetros 'ticket' e/ou 'oferta' são obrigatórios.\";\n  } \n\n  return msg_erro;\n\n}\n\nfunction validarTelefoneBrasil(numero) {\n\n  const resParametros = validaParametros();\n  \n  if (resParametros != '') {\n    return {\n      valido: false,\n      status: \"error\",\n      status_code: \"400\",\n      ddd: null,\n      fone: fone ,\n      motivo: resParametros\n    };    \n  }      \n  \n  // regex para telefone fixo e celular no Brasil \n  // (?:[1-9]{2}) → DDD com dois dígitos (de 11 a 99)\n  // 9[6-9]\\d{7} → Celular com 9 dígitos, começando por 9[6-9]\n  // [2-5]\\d{7} → Fixo com 8 dígitos, começando por 2 a 5\n  // ^...$ → Garante que a string inteira siga esse padrão (sem espaços, traços, ou parênteses)\n  \n  const regex =    /^([1-9]{2})(9[1-9]\\d{7}|[2-5]\\d{7})$/;  // /^(\\d{2})(\\d{8,9})$/;\n  const match = String(numero).match(regex);\n\n  if (!match) {\n    const retorno =  {\n      valido: false,\n      status: \"error\",\n      status_code: \"400\",\n      ddd: null,\n      telefone: fone,\n      motivo: 'Não é um número de telefone válido.'\n    };\n    console.log('DEBUG:', retorno);\n    return retorno;\n  }\n\n  const ddd = match[1] || null;\n  const numeroSemDdd = match[2];\n\n  if (!ddd) {\n    const retorno =  {\n      valido: false,\n      status: \"error\",\n      status_code: \"400\",\n      ddd: null,\n      telefone: fone,\n      motivo: 'O DDD do telefone é inválido'\n    };\n    console.log('DEBUG:', retorno);\n    return retorno;\n  }\n\n  if (!dddsValidos.includes(ddd)) {\n    const retorno =  {\n      valido: false,\n      status: \"error\",\n      status_code: \"400\",\n      ddd: ddd,\n      telefone: fone,\n      motivo: 'O DDD do telefone é inválido'\n    };\n    console.log('DEBUG:', retorno);\n    return retorno;\n  }\n\n  let tipo = null;\n  let valido = false;\n  let numeroFormatado = null;\n\n  const match_celular = String(numero).match(/^[1-9]{2}9[1-9]\\d{7}$/);\n  const match_fixo = String(numero).match(/^[1-9]{2}[2-5]\\d{7}$/);\n\n  if (match_celular) {   \n    tipo = 'celular';\n    valido = true;\n    numeroFormatado = `${ddd}${numeroSemDdd}`;\n  } else if (match_fixo) {   \n    tipo = 'fixo';\n    valido = true;\n    numeroFormatado = `${ddd}${numeroSemDdd}`;\n  } else {\n    return {\n      valido: false,\n      status: \"error\",\n      status_code: \"400\",\n      ddd: ddd,\n      telefone: fone,\n      motivo: 'Número não corresponde a um telefone válido para o Whatsapp'\n    };\n  }\n\n  numero_wpp = numero;\n  if (!numero.startsWith(\"55\")) {\n    numero_wpp =  \"55\" + numero;\n  } \n\n  return {\n    valido,\n    status: \"success\",\n    tipo,\n    status_code: \"200\",\n    ddd,\n    numeroFormatado,\n    \"motivo\": \"\"\n  };\n}\n\nreturn $input.all().map(item => {\n\n  const resultado = validarTelefoneBrasil(fone);\n\n  return {\n    json: {\n      ...item.json,\n      \"numero_wpp\": numero_wpp,\n      ...resultado\n    }\n  };\n});\n"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -1488,
+          752
+        ],
+        "id": "f2c4d705-ba25-4b7f-a5d1-4fbf8e31d784",
+        "name": "Valida parâmetros de requisicao",
+        "alwaysOutputData": true,
+        "onError": "continueErrorOutput"
+      },
+      {
+        "parameters": {
+          "jsCode": "let clienteId = \"\";\ntry {\n  clienteId = $node[\"Decodifica token\"]?.json.payload.subject.clienteId;\n} catch (error) {\n  clienteId = null;\n}\n\nreturn [{\n  json: {\n    user_id: clienteId,\n    error: {\n      \"status\": $input.first().json.response.body.status,\n      \"status_code\": $input.first().json.response.body.status_code,\n      \"message\": $input.first().json.response.body.message,\n      \"telefone\": $input.first().json.response.body.telefone ?? null\n    }\n  }\n}];"
+        },
+        "type": "n8n-nodes-base.code",
+        "typeVersion": 2,
+        "position": [
+          -160,
+          1104
+        ],
+        "id": "8023f601-b846-4c8c-ac8b-55f7ba15635b",
+        "name": "Prepara dados de erros"
+      },
+      {
+        "parameters": {
+          "enableResponseOutput": true,
+          "respondWith": "json",
+          "responseBody": "{\n  \"status\": \"Validated\",\n  \"status_code\": \"200\",\n  \"message\": \"Dados de envio validados. Envio será efetuado\"\n}",
+          "options": {
+            "responseCode": 200
+          }
+        },
+        "type": "n8n-nodes-base.respondToWebhook",
+        "typeVersion": 1.4,
+        "position": [
+          1024,
+          704
+        ],
+        "id": "9b39a636-b29b-483f-aeb3-79c3a68112c0",
+        "name": "Responde erro ",
+        "alwaysOutputData": false,
+        "onError": "continueRegularOutput"
+      }
+    ],
+    "connections": {
+      "Recebe Wpp inicial": {
+        "main": [
+          [
+            {
+              "node": "Edit Inicio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Valida token": {
+        "main": [
+          [
+            {
+              "node": "Decodifica token",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Responde erro 401",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Busca usuário": {
+        "main": [
+          [
+            {
+              "node": "Se usuário está ativo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Decodifica token": {
+        "main": [
+          [
+            {
+              "node": "Gera uma chave única",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se parâmetros váalidos": {
+        "main": [
+          [
+            {
+              "node": "Busca usuário",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Responde erro 400",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se usuário está ativo": {
+        "main": [
+          [
+            {
+              "node": "Edit Fields1",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Responde erro 403",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Grava na fila de erros de fluxo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Grava na fila de erros de requisição": {
+        "main": [
+          [
+            {
+              "node": "End (Error)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Responde erro 403": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Prepara dados de erros",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Responde erro 400": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Prepara dados de erros",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Responde erro 401": {
+        "main": [
+          [],
+          [
+            {
+              "node": "Prepara dados de erros",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Grava na fila de erros de fluxo": {
+        "main": [
+          [
+            {
+              "node": "End (Error)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Fields1": {
+        "main": [
+          [
+            {
+              "node": "Sandbox",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Wait": {
+        "main": [
+          [
+            {
+              "node": "Cria dispatch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Gera uma chave única": {
+        "main": [
+          [
+            {
+              "node": "Valida parâmetros de requisicao",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Entrega token": {
+        "main": [
+          [
+            {
+              "node": "End (Success)",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "If": {
+        "main": [
+          [
+            {
+              "node": "Registra dispatch com erro",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Erro ~ 400",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Edit Inicio": {
+        "main": [
+          [
+            {
+              "node": "Valida token",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Se é envio direto ": {
+        "main": [
+          [
+            {
+              "node": "Entrega token",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Dados envio",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Sandbox": {
+        "main": [
+          [
+            {
+              "node": "Wait",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Cria dispatch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cria dispatch": {
+        "main": [
+          [
+            {
+              "node": "Se é envio direto ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Dados envio": {
+        "main": [
+          [
+            {
+              "node": "Fila de dispatch",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Fila de dispatch": {
+        "main": [
+          [
+            {
+              "node": "End (Success)1",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "Responde erro ",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Valida parâmetros de requisicao": {
+        "main": [
+          [
+            {
+              "node": "Se parâmetros váalidos",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Responde erro 400",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Prepara dados de erros": {
+        "main": [
+          [
+            {
+              "node": "Grava na fila de erros de requisição",
+              "type": "main",
+              "index": 0
+            },
+            {
+              "node": "If",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {
+      "Recebe Wpp inicial": [
+        {
+          "json": {
+            "headers": {
+              "host": "webhooks.integraflux.com.br",
+              "user-agent": "axios/1.12.0",
+              "content-length": "638",
+              "accept": "application/json,text/html,application/xhtml+xml,application/xml,text/*;q=0.9, image/*;q=0.8, */*;q=0.7",
+              "accept-encoding": "gzip, compress, deflate, br",
+              "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWJqZWN0Ijp7ImNsaWVudGVJZCI6ImE5YzNkNTg2LWM4YzgtNDg3Ny05MjQ3LTA3OTIyOGM0YzVkNSJ9LCJpYXQiOjE3NjMyNTE0NDd9.scFnnF_EF5Vk7ZD7kgumEwwHmDXax36mCk_83qCE_EY",
+              "content-type": "application/json",
+              "x-forwarded-for": "10.0.0.2",
+              "x-forwarded-host": "webhooks.integraflux.com.br",
+              "x-forwarded-port": "443",
+              "x-forwarded-proto": "https",
+              "x-forwarded-server": "47459ce78045",
+              "x-real-ip": "10.0.0.2"
+            },
+            "params": {},
+            "query": {},
+            "body": {
+              "telefone": "031985286324",
+              "ticket": "*OURO PRETO - MG*\nCOMPROVANTE DE AQUISICAO E ATIVACAO\n------------------------------------\n21/11/2025 09:37      NSU: 093659\n\nCPF: 09*.***.**6-17\nPlaca: PZR7E94\nVeiculo: Carro\n*Valor total: R$ 3,50*\nForma de pagamento: Dinheiro\n\n*Ativado: 2 horas*\n\n*Saldo do condutor:*\nR$ 0,00\n------------------------------------\nEste e um comprovante de aquisicao e\nativacao de creditos de rotativo.\n------------------------------------\nAutenticidade:\n22907a63-e754-4a81-ba6b-163ab2bfbcaf\n\n\nBaixe nosso aplicativo:\nROTATIVO DIGITAL OURO PRETO\nwww.rotativodigitalop.com.br/app\n",
+              "offer": ""
+            },
+            "webhookUrl": "https://webhooks.integraflux.com.br/webhook/get-code-dispatch_rd",
+            "executionMode": "production",
+            "jwtPayload": {
+              "subject": {
+                "clienteId": "a9c3d586-c8c8-4877-9247-079228c4c5d5"
+              },
+              "iat": 1763251447
+            }
+          }
+        }
+      ]
+    },
+    "versionId": "cb727f79-d4ce-495e-b6db-d267d506ef8c",
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2025-11-12T21:50:37.065Z",
+        "createdAt": "2025-11-12T21:50:37.065Z",
+        "role": "workflow:owner",
+        "workflowId": "zPOCRF2nWNPXfHH8",
+        "projectId": "aaH2ba1xtHxvGWnn"
+      }
+    ],
+    "tags": [
+      {
+        "updatedAt": "2025-12-01T22:11:17.890Z",
+        "createdAt": "2025-12-01T22:11:17.890Z",
+        "id": "qPEIixlcSQFqYcWA",
+        "name": "INVIA"
+      }
+    ]
+  },
+  {
+    "updatedAt": "2025-12-01T22:13:22.574Z",
+    "createdAt": "2025-11-12T21:23:46.747Z",
+    "id": "zfYsUfFOcxJ8toUf",
+    "name": "[SUP]-[INVIA] - Registra erros de solicitação",
+    "active": true,
+    "isArchived": false,
+    "nodes": [
+      {
+        "parameters": {
+          "queue": "RDT-INVIA.request_error",
+          "options": {
+            "acknowledge": "executionFinishes",
+            "jsonParseBody": true,
+            "onlyContent": true
+          }
+        },
+        "type": "n8n-nodes-base.rabbitmqTrigger",
+        "typeVersion": 1,
+        "position": [
+          -320,
+          80
+        ],
+        "id": "e7a08b7d-a661-4db4-8c35-fedb1e6c4b6e",
+        "name": "RabbitMQ Trigger",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "tableId": "request_error",
+          "fieldsUi": {
+            "fieldValues": [
+              {
+                "fieldId": "user_id",
+                "fieldValue": "={{ $json.user_id }}"
+              },
+              {
+                "fieldId": "status",
+                "fieldValue": "={{ $json.error.status }}"
+              },
+              {
+                "fieldId": "numero",
+                "fieldValue": "={{ $json.error.telefone }}"
+              },
+              {
+                "fieldId": "message",
+                "fieldValue": "={{ $json.error.message }}"
+              },
+              {
+                "fieldId": "status_code",
+                "fieldValue": "={{ $json.error.status_code }}"
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.supabase",
+        "typeVersion": 1,
+        "position": [
+          -96,
+          80
+        ],
+        "id": "a8038913-b386-40bb-9d38-e6830feae267",
+        "name": "Grava erro de request",
+        "credentials": {
+          "supabaseApi": {
+            "id": "PWGy3ashAuUayOeJ",
+            "name": "Supabase INVIA"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.errorTrigger",
+        "typeVersion": 1,
+        "position": [
+          -336,
+          -144
+        ],
+        "id": "ec7cc31e-7776-4e97-8511-aaffa834a877",
+        "name": "Error Trigger"
+      },
+      {
+        "parameters": {
+          "mode": "exchange",
+          "exchange": "RDT-INVIA",
+          "exchangeType": "topic",
+          "routingKey": "flux_error",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.rabbitmq",
+        "typeVersion": 1.1,
+        "position": [
+          -96,
+          -144
+        ],
+        "id": "170c4787-2d10-4e84-83bb-dfd2ca03c64b",
+        "name": "Grava na fila de erros de fluxo",
+        "credentials": {
+          "rabbitmq": {
+            "id": "Irog5lA5MaHOOmfx",
+            "name": "RabbitMQ account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "id": "e8826118-0ae6-4672-8f3b-df1cbbf76e1b",
+        "name": "End (Error)1",
+        "type": "n8n-nodes-base.noOp",
+        "position": [
+          128,
+          -144
+        ],
+        "typeVersion": 1
+      }
+    ],
+    "connections": {
+      "RabbitMQ Trigger": {
+        "main": [
+          [
+            {
+              "node": "Grava erro de request",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Error Trigger": {
+        "main": [
+          [
+            {
+              "node": "Grava na fila de erros de fluxo",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Grava na fila de erros de fluxo": {
+        "main": [
+          [
+            {
+              "node": "End (Error)1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "settings": {
+      "executionOrder": "v1"
+    },
+    "staticData": null,
+    "meta": {
+      "templateCredsSetupCompleted": true
+    },
+    "pinData": {},
+    "versionId": "b7921ca5-f857-4a42-a965-38d97e09e7ca",
+    "triggerCount": 1,
+    "shared": [
+      {
+        "updatedAt": "2025-11-12T21:23:46.747Z",
+        "createdAt": "2025-11-12T21:23:46.747Z",
+        "role": "workflow:owner",
+        "workflowId": "zfYsUfFOcxJ8toUf",
+        "projectId": "aaH2ba1xtHxvGWnn"
+      }
+    ],
+    "tags": [
+      {
+        "updatedAt": "2025-12-01T22:11:17.890Z",
+        "createdAt": "2025-12-01T22:11:17.890Z",
+        "id": "qPEIixlcSQFqYcWA",
+        "name": "INVIA"
+      }
+    ]
+  }
+]
